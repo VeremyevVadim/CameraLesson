@@ -42,15 +42,25 @@ public class CharacterControl : MonoBehaviour
             return new Vector3(horizontal, vertical, 0.0f);
         }
     }
-    private void FixedUpdate()
+
+    private void CharacterMove()
     {
         _characterTransform.Translate(_movementVector * (movementSpeed * Time.fixedDeltaTime));
-        
+    }
+
+    private void CameraRotate()
+    {
         var rotationSpeed = mouseSensibility * Time.fixedDeltaTime;
         var mouseMovementVector = _mouseMovementVector;
         _x = _characterTransform.localEulerAngles.y + mouseMovementVector.x * rotationSpeed;
         _y += mouseMovementVector.y * rotationSpeed;
         _y = Mathf.Clamp(_y, -cameraLimitY, cameraLimitY);
         _characterTransform.localEulerAngles = new Vector3(-_y, _x, 0.0f);
+    }
+
+    private void FixedUpdate()
+    {
+        CharacterMove();
+        CameraRotate();
     }
 }
