@@ -4,8 +4,15 @@ using System.Data;
 using UnityEngine;
 using UnityEngine.AI;
 
+enum Player
+{
+    First,
+    Second
+}
+
 public class CharacterControl : MonoBehaviour
 {
+    [SerializeField] private Player playerNumber = Player.First;
     [SerializeField] private float movementSpeed = 5f;
     [SerializeField] private float mouseSensibility = 45f;
     [SerializeField] private float cameraLimitY = 90f;
@@ -31,12 +38,21 @@ public class CharacterControl : MonoBehaviour
         _zoomCameraFOV = _baseCameraFOV / 2;
     }
 
-    private Vector3 _movementVector
+    private Vector3 MovementVector
     {
         get
         {
-            var horizontal = Input.GetAxis("Horizontal");
-            var vertical = Input.GetAxis("Vertical");
+            float horizontal, vertical;
+            if (playerNumber == Player.First)
+            {
+                horizontal = Input.GetAxis("PlayerFirstHorizontal");
+                vertical = Input.GetAxis("PlayerFirstVertical");
+            }
+            else
+            {
+                horizontal = Input.GetAxis("Horizontal");
+                vertical = Input.GetAxis("Vertical");
+            }
             return new Vector3(horizontal, 0.0f, vertical);
         }
     }
@@ -53,7 +69,7 @@ public class CharacterControl : MonoBehaviour
 
     private void CharacterMove()
     {
-        _characterTransform.Translate(_movementVector * (movementSpeed * Time.fixedDeltaTime));
+        _characterTransform.Translate(MovementVector * (movementSpeed * Time.fixedDeltaTime));
     }
 
     private void CameraRotate()
