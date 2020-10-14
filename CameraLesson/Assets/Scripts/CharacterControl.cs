@@ -10,7 +10,7 @@ public class CharacterControl : MonoBehaviour
     [SerializeField] private float cameraLimitY = 90f;
 
     private float _x = 0f;
-    private float _y = 0f;
+    private float _y = 90f;
     private Transform _characterTransform;
     
     private Camera[] _cameras;
