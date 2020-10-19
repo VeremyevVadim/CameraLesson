@@ -18,7 +18,7 @@ public class CharacterControl : MonoBehaviour
     [SerializeField] private float cameraLimitY = 90f;
     [SerializeField] private float zoomDamping = 5.0f;
     private float _x = 0f;
-    private float _y = 90f;
+    private float _y = 0f;
 
     private Transform _characterTransform;
     
@@ -70,6 +70,10 @@ public class CharacterControl : MonoBehaviour
     private void CharacterMove()
     {
         _characterTransform.Translate(MovementVector * (movementSpeed * Time.fixedDeltaTime));
+
+        var position = _characterTransform.position;
+        position -= new Vector3(0.0f, position.y, 0.0f);
+        _characterTransform.position = position;
     }
 
     private void CameraRotate()
