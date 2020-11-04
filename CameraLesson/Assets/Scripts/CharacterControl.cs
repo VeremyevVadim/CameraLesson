@@ -13,7 +13,7 @@ enum Player
 public class CharacterControl : MonoBehaviour
 {
     [SerializeField] private Player playerNumber = Player.First;
-    [SerializeField] private float movementSpeed = 5f;
+    [SerializeField] public float movementSpeed = 5f;
     [SerializeField] private float mouseSensibility = 45f;
     [SerializeField] private float cameraLimitY = 90f;
     [SerializeField] private float zoomDamping = 5.0f;
