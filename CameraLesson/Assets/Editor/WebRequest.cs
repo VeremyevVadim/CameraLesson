@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO;
 using System.IO.Compression;
+using System.Security;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -40,7 +41,23 @@ public class WebRequest : MonoBehaviour
             }
             
             outPath = Path.Combine(Application.persistentDataPath, archiveName);
-            File.WriteAllBytes(outPath, uwr.downloadHandler.data);
+
+            try
+            {
+                File.WriteAllBytes(outPath, uwr.downloadHandler.data);
+            }
+            catch (ArgumentNullException e)
+            {
+                EditorUtility.DisplayDialog("Exception", 
+                    "No data to write. DownloadHandler.data is empty\n" + e.Message, "Ok");
+                return;
+            }
+            catch (IOException e)
+            {
+                EditorUtility.DisplayDialog("Exception", 
+                    "An I/O error occurred while opening the file.\n" + e.Message, "Ok");
+                return;
+            }
 
             UnpackZipFile(outPath);
         };
@@ -65,7 +82,24 @@ public class WebRequest : MonoBehaviour
         }
             
         // Deserialize json file
-        var settingsJson = File.ReadAllText(fileInfos[0].FullName);
+        string settingsJson;
+        try
+        {
+            settingsJson = File.ReadAllText(fileInfos[0].FullName);
+        }
+        catch (SecurityException e)
+        {
+            EditorUtility.DisplayDialog("Exception", 
+                "The caller does not have the required permission.\n" + e.Message, "Ok");
+            return;
+        }        
+        catch (IOException e)
+        {
+            EditorUtility.DisplayDialog("Exception", 
+                "An I/O error occurred while opening the file.\n" + e.Message, "Ok");
+            return;
+        }
+        
         var playerData = JsonUtility.FromJson<PlayerData>(settingsJson);
 
         // Set character speed
@@ -82,7 +116,7 @@ public class WebRequest : MonoBehaviour
             Debug.Log("No controller on character");
             return;
         }
-
+        
         characterController.movementSpeed = playerData.speed;
         
         Texture2D myTexture = new Texture2D(2, 2);
